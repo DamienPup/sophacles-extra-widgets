@@ -7,7 +7,7 @@ use crossterm::{
 };
 
 use ratatui::{
-    backend::{Backend, CrosstermBackend},
+    backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Margin, Rect},
     style::Color,
     text::Text,
@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn draw<B: Backend>(f: &mut Frame<B>) {
+fn draw(f: &mut Frame) {
     let result = text! {
         underlined!("Some fancy text for you!");
         "";
@@ -90,7 +90,7 @@ text! {
             .direction(Direction::Vertical)
             .margin(0)
             .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
-            .split(f.size());
+            .split(f.area());
         (chunks[0], chunks[1])
     };
 
@@ -98,7 +98,7 @@ text! {
     make_block("result", result, result_pane, f);
 }
 
-fn make_block<'a, B: Backend>(title: &str, text: impl Into<Text<'a>>, pos: Rect, f: &mut Frame<B>) {
+fn make_block<'a>(title: &str, text: impl Into<Text<'a>>, pos: Rect, f: &mut Frame) {
     let b = Block::default().title(title).borders(Borders::all());
     let inner = b.inner(pos);
     f.render_widget(b, pos);
@@ -109,7 +109,7 @@ fn make_block<'a, B: Backend>(title: &str, text: impl Into<Text<'a>>, pos: Rect,
 }
 
 fn get_middle(area: Rect) -> Rect {
-    area.inner(&Margin {
+    area.inner(Margin {
         vertical: 2,
         horizontal: 5,
     })

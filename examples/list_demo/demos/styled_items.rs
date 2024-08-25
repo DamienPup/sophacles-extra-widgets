@@ -1,5 +1,4 @@
 use ratatui::{
-    backend::Backend,
     layout::Rect,
     style::{Color, Modifier, Style},
     Frame,
@@ -9,7 +8,7 @@ use extra_widgets::styled_list::{Indicator, ItemDisplay, LineIndicators, StyledL
 
 use super::super::{words, AppState};
 
-pub fn styled_items<B: Backend>(area: Rect, state: &mut AppState, f: &mut Frame<B>) {
+pub fn styled_items(area: Rect, state: &mut AppState, f: &mut Frame) {
     let demo_items = words();
     let orange = Style::default().bg(Color::Rgb(242, 147, 5));
     let demo_items =

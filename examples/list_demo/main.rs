@@ -1,16 +1,16 @@
 use std::{error::Error, io};
 
 use crossterm::{
-    event::{self, Event, KeyCode},
+    event::{self, Event, KeyCode, KeyEventKind},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 
 use ratatui::{
-    backend::{Backend, CrosstermBackend},
+    backend::CrosstermBackend,
     layout::{Alignment, Constraint, Direction, Layout, Margin},
     style::{Color, Modifier, Style},
-    text::{Span, Spans},
+    text::{Span, Line},
     widgets::{Block, BorderType, Borders, Paragraph},
     Frame, Terminal,
 };
@@ -90,21 +90,24 @@ fn main() -> Result<(), Box<dyn Error>> {
         let _ = terminal.draw(|f| draw(mstate, f));
 
         if let Event::Key(key) = event::read()? {
-            match key.code {
-                KeyCode::Char(c) if c == 'j' => {
-                    state.move_down();
-                }
-                KeyCode::Char(c) if c == 'k' => {
-                    state.move_up();
-                }
-                KeyCode::Char(c) if c == 'h' || c == 'l' => {
-                    state.switch_focus();
-                }
-                KeyCode::Char(_) => {
-                    break;
-                }
-                _ => {}
-            };
+            // On windows, we need to ignore non-press events or we get each key twice: Once for press, once for release
+            if key.kind == KeyEventKind::Press {
+                match key.code {
+                    KeyCode::Char(c) if c == 'j' => {
+                        state.move_down();
+                    }
+                    KeyCode::Char(c) if c == 'k' => {
+                        state.move_up();
+                    }
+                    KeyCode::Char(c) if c == 'h' || c == 'l' => {
+                        state.switch_focus();
+                    }
+                    KeyCode::Char(_) => {
+                        break;
+                    }
+                    _ => {}
+                };
+            }
         }
     }
 
@@ -114,8 +117,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn draw<B: Backend>(state: &mut AppState, f: &mut Frame<B>) {
-    let app_area = f.size();
+fn draw(state: &mut AppState, f: &mut Frame) {
+    let app_area = f.area();
     let layout = Layout::default()
         .direction(Direction::Vertical)
         .margin(1)
@@ -136,7 +139,7 @@ fn draw<B: Backend>(state: &mut AppState, f: &mut Frame<B>) {
     let main_area = chunks[2];
 
     // draw top bar
-    let top_text = Spans::from(vec![
+    let top_text = Line::from(vec![
         Span::styled("Controls:", Style::default().add_modifier(Modifier::BOLD)),
         Span::raw(" 'h' - "),
         Span::styled("left,", Style::default().add_modifier(Modifier::ITALIC)),
@@ -186,7 +189,7 @@ fn draw<B: Backend>(state: &mut AppState, f: &mut Frame<B>) {
     ];
     state.picker.resize(4);
 
-    let demo_list_area = demo_list_area.inner(&Margin {
+    let demo_list_area = demo_list_area.inner(Margin {
         vertical: 2,
         horizontal: 2,
     });

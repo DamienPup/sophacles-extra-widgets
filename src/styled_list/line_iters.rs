@@ -1,14 +1,14 @@
 use std::iter::Enumerate;
 
-use ratatui::{style::Style, text::Spans};
+use ratatui::{style::Style, text::Line};
 
 use super::{DisplayLine, LineIndicators, ListItem, Separator};
 
 /// A struct for iterating through display lines given an item and a selection state
 pub(super) struct ToLines<'a> {
     style: Style,
-    text_items: Enumerate<std::vec::IntoIter<Spans<'a>>>,
-    //text_items: VecDeque<(usize, usize, Spans<'a>)>,
+    text_items: Enumerate<std::vec::IntoIter<Line<'a>>>,
+    //text_items: VecDeque<(usize, usize, Line<'a>)>,
     indicators: LineIndicators,
     selected: bool,
     line_count: usize,
@@ -163,7 +163,7 @@ mod test {
         let it = ListItem::new("a\nb\nc").style(style);
 
         for (dl, s) in ToLines::new(it, false).zip(["a", "b", "c"]) {
-            assert_eq!(dl.line, Spans::from(s));
+            assert_eq!(dl.line, Line::from(s));
             assert_eq!(dl.style, style);
         }
     }
@@ -190,7 +190,7 @@ mod test {
             ("d", true),
             ("e", true),
         ]) {
-            assert_eq!(dl.line, Spans::from(t));
+            assert_eq!(dl.line, Line::from(t));
             assert_eq!(dl.must_display, s);
         }
     }
@@ -214,7 +214,7 @@ mod test {
                 (HALF, true, Some(Color::Red), None),
             ])
         {
-            assert_eq!(dl.line, Spans::from(t));
+            assert_eq!(dl.line, Line::from(t));
             assert_eq!(dl.must_display, s);
             assert_eq!(dl.style.bg, bg);
             assert_eq!(dl.style.fg, fg);
@@ -241,7 +241,7 @@ mod test {
                 (HALF, false, None, None),
             ])
         {
-            assert_eq!(dl.line, Spans::from(t));
+            assert_eq!(dl.line, Line::from(t));
             assert_eq!(dl.must_display, s);
             assert_eq!(dl.style.bg, bg);
             assert_eq!(dl.style.fg, fg);
@@ -271,7 +271,7 @@ mod test {
                 (HALF, false, None, None),
             ])
         {
-            assert_eq!(dl.line, Spans::from(t));
+            assert_eq!(dl.line, Line::from(t));
             assert_eq!(dl.must_display, s, "line: {:?}", dl);
             assert_eq!(dl.style.bg, bg);
             assert_eq!(dl.style.fg, fg);
@@ -304,7 +304,7 @@ mod test {
                 (HALF, false, Some(Color::Green), None),
             ])
         {
-            assert_eq!(dl.line, Spans::from(t));
+            assert_eq!(dl.line, Line::from(t));
             assert_eq!(dl.must_display, s, "line: {:?}", dl);
             assert_eq!(dl.style.bg, bg);
             assert_eq!(dl.style.fg, fg);

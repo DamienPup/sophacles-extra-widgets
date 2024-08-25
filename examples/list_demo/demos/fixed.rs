@@ -1,5 +1,4 @@
 use ratatui::{
-    backend::Backend,
     layout::Rect,
     style::{Color, Style},
     Frame,
@@ -9,7 +8,7 @@ use extra_widgets::styled_list::{ItemDisplay, StyledList, WindowType};
 
 use super::super::{words, AppState};
 
-pub fn fixed<B: Backend>(area: Rect, state: &mut AppState, f: &mut Frame<B>) {
+pub fn fixed(area: Rect, state: &mut AppState, f: &mut Frame) {
     let demo_items = words();
     let demo_list = StyledList::new(demo_items)
         .default_style(Style::reset().bg(Color::Black).fg(Color::White))

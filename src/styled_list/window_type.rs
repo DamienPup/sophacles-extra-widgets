@@ -201,7 +201,7 @@ where
 mod test {
     use super::*;
     use ratatui::style::Style;
-    use ratatui::text::Spans;
+    use ratatui::text::Line;
 
     #[test]
     fn selection_state_toggle() {
@@ -232,7 +232,7 @@ mod test {
             let must_display = i >= selection_start && i <= selection_end;
             DisplayLine {
                 style: Style::default(),
-                line: Spans::from(s),
+                line: Line::from(s),
                 must_display,
                 left_indicator: " ".into(),
                 right_indicator: " ".into(),
@@ -248,9 +248,9 @@ mod test {
         state.set_pos(0);
         let res: Vec<DisplayLine> = selection_scroll(make_list(1, 1), 3, &mut state).collect();
 
-        assert_eq!(res[0].line.0[0].content, "a");
-        assert_eq!(res[1].line.0[0].content, "b");
-        assert_eq!(res[2].line.0[0].content, "c");
+        assert_eq!(res[0].line.spans[0].content, "a");
+        assert_eq!(res[1].line.spans[0].content, "b");
+        assert_eq!(res[2].line.spans[0].content, "c");
 
         assert!(!res[0].must_display);
         assert!(res[1].must_display);
@@ -265,9 +265,9 @@ mod test {
         state.set_pos(0);
         let res: Vec<DisplayLine> = selection_scroll(make_list(2, 2), 3, &mut state).collect();
 
-        assert_eq!(res[0].line.0[0].content, "a");
-        assert_eq!(res[1].line.0[0].content, "b");
-        assert_eq!(res[2].line.0[0].content, "c");
+        assert_eq!(res[0].line.spans[0].content, "a");
+        assert_eq!(res[1].line.spans[0].content, "b");
+        assert_eq!(res[2].line.spans[0].content, "c");
 
         assert!(!res[0].must_display);
         assert!(!res[1].must_display);
@@ -282,9 +282,9 @@ mod test {
         state.set_pos(0);
         let res: Vec<DisplayLine> = selection_scroll(make_list(3, 4), 3, &mut state).collect();
 
-        assert_eq!(res[0].line.0[0].content, "c");
-        assert_eq!(res[1].line.0[0].content, "d");
-        assert_eq!(res[2].line.0[0].content, "e");
+        assert_eq!(res[0].line.spans[0].content, "c");
+        assert_eq!(res[1].line.spans[0].content, "d");
+        assert_eq!(res[2].line.spans[0].content, "e");
 
         assert!(!res[0].must_display);
         assert!(res[1].must_display);
@@ -299,9 +299,9 @@ mod test {
         state.set_pos(5);
         let res: Vec<DisplayLine> = selection_scroll(make_list(3, 4), 3, &mut state).collect();
 
-        assert_eq!(res[0].line.0[0].content, "d");
-        assert_eq!(res[1].line.0[0].content, "e");
-        assert_eq!(res[2].line.0[0].content, "f");
+        assert_eq!(res[0].line.spans[0].content, "d");
+        assert_eq!(res[1].line.spans[0].content, "e");
+        assert_eq!(res[2].line.spans[0].content, "f");
 
         assert!(res[0].must_display);
         assert!(res[1].must_display);
@@ -316,9 +316,9 @@ mod test {
         state.set_pos(5);
         let res: Vec<DisplayLine> = selection_scroll(make_list(3, 6), 3, &mut state).collect();
 
-        assert_eq!(res[0].line.0[0].content, "d");
-        assert_eq!(res[1].line.0[0].content, "e");
-        assert_eq!(res[2].line.0[0].content, "f");
+        assert_eq!(res[0].line.spans[0].content, "d");
+        assert_eq!(res[1].line.spans[0].content, "e");
+        assert_eq!(res[2].line.spans[0].content, "f");
 
         assert!(res[0].must_display);
         assert!(res[1].must_display);
@@ -333,9 +333,9 @@ mod test {
         state.set_pos(0);
         let res: Vec<DisplayLine> = selection_scroll(make_list(3, 6), 3, &mut state).collect();
 
-        assert_eq!(res[0].line.0[0].content, "d");
-        assert_eq!(res[1].line.0[0].content, "e");
-        assert_eq!(res[2].line.0[0].content, "f");
+        assert_eq!(res[0].line.spans[0].content, "d");
+        assert_eq!(res[1].line.spans[0].content, "e");
+        assert_eq!(res[2].line.spans[0].content, "f");
 
         assert!(res[0].must_display);
         assert!(res[1].must_display);

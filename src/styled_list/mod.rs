@@ -34,7 +34,7 @@ use ratatui::{
     buffer::Buffer,
     layout::Rect,
     style::Style,
-    text::Spans,
+    text::Line,
     widgets::{Block, StatefulWidget, Widget},
 };
 
@@ -43,14 +43,14 @@ pub use list_state::ListState;
 use separator::Separator;
 
 /// A rendered line of text in the list widget. Multiple DisplayLines can be created from a single
-/// [`ListItem`]. The window operates on an iterable of [`DiplayLine`]s
+/// [`ListItem`]. The window operates on an iterable of [`DisplayLine`]s
 #[derive(Clone, Debug)]
 struct DisplayLine<'a> {
     pub(super) style: Style,
-    pub(super) line: Spans<'a>,
+    pub(super) line: Line<'a>,
     pub(super) must_display: bool,
-    pub(super) left_indicator: Spans<'a>,
-    pub(super) right_indicator: Spans<'a>,
+    pub(super) left_indicator: Line<'a>,
+    pub(super) right_indicator: Line<'a>,
 }
 
 /// Control how lines are rendered
@@ -225,7 +225,7 @@ where
 
             // show the left indicator and adjust the display area for the item text
             if self.show_left_indicator {
-                buf.set_spans(x, y, &l.left_indicator, 1);
+                buf.set_line(x, y, &l.left_indicator, 1);
                 x += 1;
                 line_width -= 1;
             }
@@ -233,11 +233,11 @@ where
             // show the right indicator and adjust the display area for the item text
             if self.show_right_indicator {
                 line_width -= 1;
-                buf.set_spans(x + line_width, y, &l.right_indicator, 1);
+                buf.set_line(x + line_width, y, &l.right_indicator, 1);
             }
 
             // show the item text
-            buf.set_spans(x, y, &l.line, line_width);
+            buf.set_line(x, y, &l.line, line_width);
         }
     }
 }
@@ -258,10 +258,10 @@ impl<'a> DisplayLine<'a> {
     fn filler(x: &'static str) -> Self {
         Self {
             style: Style::default(),
-            line: Spans::from(x),
+            line: Line::from(x),
             must_display: false,
-            left_indicator: Spans::from(x),
-            right_indicator: Spans::from(x),
+            left_indicator: Line::from(x),
+            right_indicator: Line::from(x),
         }
     }
 }

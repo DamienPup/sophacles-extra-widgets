@@ -1,6 +1,6 @@
-//! macros for building and styling text for tui.
+//! Macros for building and styling text for tui.
 
-/// styles text into a span with the bold modifier set. The argument must evaluate to something
+/// Styles text into a span with the bold modifier set. The argument must evaluate to something
 /// that implements [`Into<Span>`](ratatui::text::Span)
 #[macro_export]
 macro_rules! bold {
@@ -11,7 +11,7 @@ macro_rules! bold {
     }};
 }
 
-/// styles text into a span with the italic modifier set. The argument must evaluate to something
+/// Styles text into a span with the italic modifier set. The argument must evaluate to something
 /// that implements [`Into<Span>`](ratatui::text::Span)
 #[macro_export]
 macro_rules! italic {
@@ -22,7 +22,7 @@ macro_rules! italic {
     }};
 }
 
-/// styles text into a span with the underlined modifier set. The argument must evaluate to something
+/// Styles text into a span with the underlined modifier set. The argument must evaluate to something
 /// that implements [`Into<Span>`](ratatui::text::Span)
 #[macro_export]
 macro_rules! underlined {
@@ -33,7 +33,7 @@ macro_rules! underlined {
     }};
 }
 
-/// styles text into a span with the foreground set. The first argument must evaluate to something
+/// Styles text into a span with the foreground set. The first argument must evaluate to something
 /// that implements [`Into<Span>`](ratatui::text::Span), and the second a [`Color`](ratatui::style::Color)
 #[macro_export]
 macro_rules! fg {
@@ -79,45 +79,45 @@ impl<'a> AddLines<::ratatui::text::Span<'a>> for ::ratatui::text::Text<'a> {
     }
 }
 
-impl<'a> AddLines<::ratatui::text::Spans<'a>> for ::ratatui::text::Text<'a> {
-    fn add_lines(&mut self, to_add: ::ratatui::text::Spans<'a>) {
+impl<'a> AddLines<::ratatui::text::Line<'a>> for ::ratatui::text::Text<'a> {
+    fn add_lines(&mut self, to_add: ::ratatui::text::Line<'a>) {
         self.lines.push(to_add);
     }
 }
 
-impl<'a> AddLines<Vec<::ratatui::text::Spans<'a>>> for ::ratatui::text::Text<'a> {
-    fn add_lines(&mut self, mut to_add: Vec<::ratatui::text::Spans<'a>>) {
+impl<'a> AddLines<Vec<::ratatui::text::Line<'a>>> for ::ratatui::text::Text<'a> {
+    fn add_lines(&mut self, mut to_add: Vec<::ratatui::text::Line<'a>>) {
         self.lines.append(&mut to_add);
     }
 }
 
-/// Create a [`Vec<Spans>`](ratatui::text::Spans) from lines of a string separated by '\n'
+/// Create a [`Vec<Line>`](ratatui::text::Line) from lines of a string separated by '\n'
 #[macro_export]
 macro_rules! split {
     ($e:expr) => {{
         $e.lines()
-            .map(|l| ::ratatui::text::Spans::from(l))
-            .collect::<Vec<::ratatui::text::Spans>>()
+            .map(|l| ::ratatui::text::Line::from(l))
+            .collect::<Vec<::ratatui::text::Line>>()
     }};
 }
 
-/// Create a single [Spans](ratatui::text::Spans) from many
+/// Create a single [Line](ratatui::text::Line) from many
 /// [Span](ratatui::text::Span) structs. Useful with [`text!`](crate::text!)
 /// for having multiple stylings in a single line
 #[macro_export]
 macro_rules! line {
     ($($e:expr),* $(,)?) => {{
-        let mut res = ::ratatui::text::Spans::default();
-        $(res.0.push(::ratatui::text::Span::from($e));)*;
+        let mut res = ::ratatui::text::Line::default();
+        $(res.push_span(::ratatui::text::Span::from($e));)*;
         res
     }};
 }
 
-/// Creates a `Vec<Spans>` from each line of the enclosed block
+/// Creates a [`Vec<Line>`](ratatui::text::Line) from each line of the enclosed block
 #[macro_export]
 macro_rules! text {
     ($t:expr) => {
-        res.push(Spans::from($t));
+        res.push(Line::from($t));
     };
     ($($t:expr);* $(;)?) => {{
         use $crate::text_macros::AddLines;
@@ -131,7 +131,7 @@ macro_rules! text {
 mod tests {
     use ratatui::{
         style::{Modifier, Style},
-        text::{Span, Spans, Text},
+        text::{Span, Line, Text},
     };
 
     #[test]
@@ -170,15 +170,15 @@ mod tests {
     #[test]
     fn text() {
         let mut expected = Text::from(vec![
-            Spans::from(Span::styled(
+            Line::from(Span::styled(
                 "foo",
                 Style::default().add_modifier(Modifier::ITALIC),
             )),
-            Spans::from(Span::styled(
+            Line::from(Span::styled(
                 "bar",
                 Style::default().add_modifier(Modifier::UNDERLINED),
             )),
-            Spans::from("baz"),
+            Line::from("baz"),
         ]);
 
         let test = text! {
@@ -202,15 +202,15 @@ mod tests {
             "a\nb";
             split!("q\nr")
         };
-        expected.lines.push(Spans::from("a\nb"));
-        expected.lines.push(Spans::from("q"));
-        expected.lines.push(Spans::from("r"));
+        expected.lines.push(Line::from("a\nb"));
+        expected.lines.push(Line::from("q"));
+        expected.lines.push(Line::from("r"));
         assert_eq!(expected, test);
     }
 
     #[test]
     fn text_single_line() {
-        let expected = Text::from(vec![Spans::from(Span::styled(
+        let expected = Text::from(vec![Line::from(Span::styled(
             "foo",
             Style::default().add_modifier(Modifier::ITALIC),
         ))]);

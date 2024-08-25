@@ -7,7 +7,7 @@ use crossterm::{
 };
 
 use ratatui::{
-    backend::{Backend, CrosstermBackend},
+    backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     Frame, Terminal,
@@ -44,8 +44,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn draw<B: Backend>(f: &mut Frame<B>) {
-    let app_area = f.size();
+fn draw(f: &mut Frame) {
+    let app_area = f.area();
 
     let calarea = Rect {
         x: app_area.x + 1,

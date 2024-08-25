@@ -2,7 +2,7 @@
 
 Additional widgets for [ratatui](https://crates.io/crates/ratatui).
 
-These widgets are designed to operate similar to the built-in widgets in tui-rs, and should fit
+These widgets are designed to operate similar to the built-in widgets in ratatui, and should fit
 into your app cleanly.
 
 TODO: Add example gifs
@@ -19,15 +19,15 @@ Since the internals are documented as well.
 By default all the widgets are built and available:
 ```toml
 [dependencies]
-extra-widgets = "0.0.1"
-ratatui = "0.20.0"
+extra-widgets = "0.1.0"
+ratatui = "0.28.1"
 ```
 Alternately, each widget can be enabled individually. The feature names are the same as the
 module name for the widget. To just use the calendar widget:
 ```toml
 [dependencies]
-extra-widgets = {"0.0.1" default-features = false, features = ["calendar"] }
-ratatui = "0.20.0"
+extra-widgets = {"0.1.0" default-features = false, features = ["calendar"] }
+ratatui = "0.28.1"
 ```
 Dependencies for each widget are only pulled if the feature is enabled.
 
